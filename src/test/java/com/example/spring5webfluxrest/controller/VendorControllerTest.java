@@ -68,7 +68,7 @@ public class VendorControllerTest {
         .willReturn(Flux.just(vendor));
 
     webTestClient.post()
-        .uri("/api/v1/vendors/id")
+        .uri("/api/v1/vendors")
         .body(just, Vendor.class)
         .exchange()
         .expectStatus()
