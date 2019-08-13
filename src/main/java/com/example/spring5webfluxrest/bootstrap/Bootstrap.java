@@ -24,15 +24,15 @@ public class Bootstrap implements CommandLineRunner {
 
       Category category2 = new Category();
       category2.setDescription("some description");
-      categoryRepository.save(category);
-      categoryRepository.save(category2);
+      categoryRepository.save(category).block();
+      categoryRepository.save(category2).block();
     }
 
     if(vendorRepository.count().block() == 0 ) {
       Vendor vendor = new Vendor();
       vendor.setFirstName("FirstName");
       vendor.setLastName("LastName");
-      vendorRepository.save(vendor);
+      vendorRepository.save(vendor).block();
     }
   }
 }
