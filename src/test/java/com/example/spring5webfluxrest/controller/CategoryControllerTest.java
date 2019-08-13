@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
+import org.reactivestreams.Publisher;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,6 +56,42 @@ public class CategoryControllerTest {
         .uri("/api/v1/categories/id")
         .exchange()
         .expectBody(Category.class);
+  }
+
+
+  @Test
+  public void createTest() {
+    Category category = new Category();
+    category.setId("id");
+    category.setDescription("descritpion");
+    BDDMockito.given(categoryRepository.saveAll(Mockito.any(Publisher.class)))
+        .willReturn(Flux.just(category));
+    Mono<Category> categoryMono = Mono.just(category);
+
+    webTestClient.post()
+        .uri("/api/v1/categories")
+        .body(categoryMono, Category.class)
+        .exchange()
+        .expectStatus()
+        .isOk();
+  }
+
+
+  @Test
+  public void updatePutTest() {
+    Category category = new Category();
+    category.setId("id");
+    category.setDescription("descritpion");
+    BDDMockito.given(categoryRepository.save(Mockito.any()))
+        .willReturn(Mono.just(category));
+    Mono<Category> categoryMono = Mono.just(category);
+
+    webTestClient.put()
+        .uri("/api/v1/categories/id")
+        .body(categoryMono, Category.class)
+        .exchange()
+        .expectStatus()
+        .isOk();
   }
 
 }
