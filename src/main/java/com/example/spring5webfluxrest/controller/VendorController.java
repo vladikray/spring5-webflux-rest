@@ -3,10 +3,8 @@ package com.example.spring5webfluxrest.controller;
 import com.example.spring5webfluxrest.domain.Vendor;
 import com.example.spring5webfluxrest.repository.VendorRepository;
 import lombok.Data;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.reactivestreams.Publisher;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +24,17 @@ public class VendorController {
   @GetMapping("/{id}")
   public Mono<Vendor> findById(@PathVariable String id) {
     return vendorRepository.findById(id);
+  }
+
+  @PostMapping
+  public Mono<Void> create(@RequestBody Publisher<Vendor> vendorPublisher) {
+    return vendorRepository.saveAll(vendorPublisher).then();
+  }
+
+  @PutMapping("/{id}")
+  public Mono<Vendor> updatePut(@PathVariable String id, @RequestBody Vendor vendor) {
+    vendor.setId(id);
+    return vendorRepository.save(vendor);
   }
 
 }
